@@ -1,0 +1,5 @@
+mountain_1	mountain_1	forest_1	none_1		none_1		forest_1	forest_1
+mountain_1	none_1		rocks_1		none_1		none_1 		none_1		mountain_1
+castle_red_1	mountain_1	shallow_1	rocks_1		house_blue_1	none_1		rocks_1
+none_1		none_1		none_1		forest_1	forest_1	none_1		none_1
+none_1		none_1		shallow_1	hills_1		none_1		none_1		rocks_1

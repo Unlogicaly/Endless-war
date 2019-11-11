@@ -1,0 +1,5 @@
+snow_1   snow_1   snow_1   road_1   road_1  snow_1   snow_1
+snow_1   sea_1    sea_1    sea_1    road_1  road_1   snow_1
+snow_1   snow_1   sea_1    sea_1    snow_1  road_1   sea_1
+road_1   sea_1    sea_1    snow_1   snow_1  road_1   sea_1
+road_1   road_1   sea_1    snow_1   road_1  road_1   sea_1
