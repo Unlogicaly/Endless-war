@@ -56,36 +56,36 @@ void del(vector<T> &src, T &sub) {
         }
 }
 
-vector<string> A_star(const Map &m, const Field &start, const Field &end)
-{
-    auto matrix = Func::vector_2d(m.get_h(), m.get_w(), pair<double, double>{0, 0});
+//vector<string> A_star(const Map &m, const Field &start, const Field &end)
+//{
+//    auto matrix = Func::vector_2d(m.get_h(), m.get_w(), pair<double, double>{0, 0});
 
-    auto s_h = start.get_name()[0] - 'a', s_w = start.get_name()[1] - '1';
+//    auto s_h = start.get_name()[0] - 'a', s_w = start.get_name()[1] - '1';
 
-    for (auto i = 0; i < matrix.size(); ++i) {
-        for (auto j = 0; j < matrix[0].size(); ++j) {
-            matrix[i][j].second = Func::round(dist(i, j, s_h, s_w), 2);
-        }
-    }
+//    for (auto i = 0; i < matrix.size(); ++i) {
+//        for (auto j = 0; j < matrix[0].size(); ++j) {
+//            matrix[i][j].second = Func::round(dist(i, j, s_h, s_w), 2);
+//        }
+//    }
 
-    bool ended{false};
+//    bool ended{false};
 
-    vector<point> av_nodes;
-    if (s_h != 0) av_nodes.push_back({s_h - 1, s_w});
-    if (s_w != 0) av_nodes.push_back({s_h, s_w - 1});
-    if (s_h != matrix.size() - 1) av_nodes.push_back({s_h + 1, s_w});
-    if (s_w != matrix[0].size() - 1) av_nodes.push_back({s_h, s_w + 1});
-    point prev =
-    while(!ended) {
-        point cur = av_nodes[0];
-        for (auto &t: av_nodes)
-            cur = std::min(at(matrix, cur), at(matrix, t), [](point p1, point p2) {
-                return p1.first + p1.second < p2.first + p2.second;
-            });
-        del(av_nodes, cur);
-        at(matrix, cur).first +=
-    }
-}
+//    vector<point> av_nodes;
+//    if (s_h != 0) av_nodes.push_back({s_h - 1, s_w});
+//    if (s_w != 0) av_nodes.push_back({s_h, s_w - 1});
+//    if (s_h != matrix.size() - 1) av_nodes.push_back({s_h + 1, s_w});
+//    if (s_w != matrix[0].size() - 1) av_nodes.push_back({s_h, s_w + 1});
+//    point prev =
+//    while(!ended) {
+//        point cur = av_nodes[0];
+//        for (auto &t: av_nodes)
+//            cur = std::min(at(matrix, cur), at(matrix, t), [](point p1, point p2) {
+//                return p1.first + p1.second < p2.first + p2.second;
+//            });
+//        del(av_nodes, cur);
+//        at(matrix, cur).first +=
+//    }
+//}
 
 int main()
 {
