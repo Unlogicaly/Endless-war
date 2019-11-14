@@ -1,8 +1,4 @@
-#include "editting_files.h"
-#include <algorithm>
 #include <cstdio>
-#include <fstream>
-#include <iostream>
 #include <iterator>
 #include <windows.h>
 #include "map.h"
@@ -16,20 +12,11 @@ using std::vector;
 using std::string;
 using std::pair;
 
-void print(vector<vector<string>> &vec)
-{
-    for (auto &t: vec)
-    {
-        for (auto &s: t){
-            std::cout << s << "\t\t";
-        }
-        std::cout << std::endl;
-    }
-}
+const string source = "D:\\Endless_war\\source";
 
 double heuristic(Field *f1, Field *f2)
 {
-    return sqrt(pow(f1->get_name()[0] - f2->get_name()[0], 2) +
+    return 2 * sqrt(pow(f1->get_name()[0] - f2->get_name()[0], 2) +
                 pow(f1->get_name()[1] - f2->get_name()[1], 2));
 }
 
@@ -40,10 +27,11 @@ d dist(d x1, d y1, d x2, d y2) {
 }
 
 #define point pair<int, int>
-#define feuture pair<double, double>
+#define feature pair<double, double>
+#define matr vector<vector<feature>>
 
 template<typename T>
-T &at(vector<vector<T>> &src, point &sub) {
+T &at(vector<vector<T>> &src, const point &sub) {
     return src[sub.first][sub.second];
 }
 
@@ -56,45 +44,96 @@ void del(vector<T> &src, T &sub) {
         }
 }
 
-//vector<string> A_star(const Map &m, const Field &start, const Field &end)
-//{
-//    auto matrix = Func::vector_2d(m.get_h(), m.get_w(), pair<double, double>{0, 0});
+string pton(point p) {
+    return string(1, char(p.first + 'a')) + Func::str(p.second + 1);
+}
 
-//    auto s_h = start.get_name()[0] - 'a', s_w = start.get_name()[1] - '1';
+point ntop(string name) {
+    return {name[0] - 'a', name[1] - '1'};
+}
 
-//    for (auto i = 0; i < matrix.size(); ++i) {
-//        for (auto j = 0; j < matrix[0].size(); ++j) {
-//            matrix[i][j].second = Func::round(dist(i, j, s_h, s_w), 2);
-//        }
-//    }
+void re_add(matr &matrix, vector<point> &av_nodes, point cur, int h_m, int w_m) {
+    int n = cur.first, m = cur.second;
+    if (n and !Func::in(av_nodes, {n - 1, m}) and !at(matrix, {n - 1, m}).first) av_nodes.push_back({n - 1, m});
+    if (m and !Func::in(av_nodes, {n, m - 1}) and !at(matrix, {n, m - 1}).first) av_nodes.push_back({n, m - 1});
+    if (h_m - n - 1 and !Func::in(av_nodes, {n + 1, m}) and !at(matrix, {n + 1, m}).first) av_nodes.push_back({n + 1, m});
+    if (w_m - m - 1 and !Func::in(av_nodes, {n, m + 1}) and !at(matrix, {n, m + 1}).first) av_nodes.push_back({n, m + 1});
+}
 
-//    bool ended{false};
+void re_weight(feature &c, const feature &p, double w) {
+    if (c.first)
+        c.first = std::min(p.first + w + c.second,
+                     c.first);
+    else
+        c.first = p.first + w + c.second;
 
-//    vector<point> av_nodes;
-//    if (s_h != 0) av_nodes.push_back({s_h - 1, s_w});
-//    if (s_w != 0) av_nodes.push_back({s_h, s_w - 1});
-//    if (s_h != matrix.size() - 1) av_nodes.push_back({s_h + 1, s_w});
-//    if (s_w != matrix[0].size() - 1) av_nodes.push_back({s_h, s_w + 1});
-//    point prev =
-//    while(!ended) {
-//        point cur = av_nodes[0];
-//        for (auto &t: av_nodes)
-//            cur = std::min(at(matrix, cur), at(matrix, t), [](point p1, point p2) {
-//                return p1.first + p1.second < p2.first + p2.second;
-//            });
-//        del(av_nodes, cur);
-//        at(matrix, cur).first +=
-//    }
-//}
+}
+
+vector<string> A_star(const Map &m, const Field &start, const Field &end)
+{
+    auto h_m = m.get_h(), w_m = m.get_w();
+
+    auto matrix = Func::matrix_2d(h_m, w_m, feature{0, 0});
+
+    auto [s_h, s_w] = ntop(start.get_name());
+    auto [e_h, e_w] = ntop(end.get_name());
+
+    for (auto i = 0; i < h_m; ++i) {
+        for (auto j = 0; j < w_m; ++j) {
+            matrix[i][j].second = Func::round(dist(i, j, e_h, e_w), 2);
+        }
+    }
+
+    matrix[s_h][s_w].first = matrix[s_h][s_w].second;
+
+    bool ended{false};
+
+    vector<point> av_nodes;
+
+    point prev = {s_h, s_w};
+
+    re_add(matrix, av_nodes, prev, h_m, w_m);
+
+    for (auto &t: av_nodes)
+        re_weight(at(matrix, t), prev, m.get_field(pton(t))->get_weight());
+
+    while(!ended) {
+        point cur = av_nodes[0];
+        for (auto &t: av_nodes)
+            cur = std::min(cur, t, [&matrix](point p1, point p2) {
+                return at(matrix, p1).first < at(matrix, p2).first;
+            });
+
+        if (cur == ntop(end.get_name())) break;
+
+        del(av_nodes, cur);
+
+        re_add(matrix, av_nodes, cur, h_m, w_m);
+
+        for (auto &t: av_nodes)
+            re_weight(at(matrix, t), at(matrix, prev), m.get_field(pton(t))->get_weight());
+
+        std::cout << "current: " << cur << "\n";
+        Func::print(av_nodes, " ", "\n\n");
+        Func::print(matrix, " ", "\n", "\n\n");
+
+        prev = cur;
+//        Func::print(av_nodes);
+    }
+    std::cout << "\n\n";
+    Func::print(matrix);
+
+    return {};
+}
 
 int main()
 {
 
-//    auto win = create_window("m");
+    auto win = create_window("m");
 
     int size = 128;
 
-    Map m{size, "D:\\My\\Source\\landscape.txt", "D:\\My\\Source\\terrain.txt", "D:\\My\\Source\\units.txt"};
+    Map m{size, source + "\\landscape.txt", source + "\\terrain.txt", source + "\\units.txt"};
 
 //    m.get_field("b2")->print_land();
 //    m.get_field("b2")->print_ter();
@@ -102,9 +141,9 @@ int main()
 
 //    std::cout << m.get_field("b2")->get_weight();
 
-//    win->attach(m);
+    win->attach(m);
 
-//    win->wait_for_button();
+
 //    vector<vector<pair<int, int>>> matrix;
 //    for (auto i = 0; i < m.get_h(); ++i) {
 //        matrix.emplace_back();
@@ -112,9 +151,10 @@ int main()
 //            matrix[i].push_back({0, 0});
 //        }
 //    }
-    A_star(m, *m.get_field("a1"), *m.get_field("b2"));
 
-//    win->wait_for_button();
+    A_star(m, *m.get_field("a1"), *m.get_field("b3"));
+
+    win->wait_for_button();
 
 //    clear(*win);
 

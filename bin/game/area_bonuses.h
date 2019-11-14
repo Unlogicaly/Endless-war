@@ -19,7 +19,7 @@ const std::map<std::string, std::map<std::string, std::vector<double>>> landscap
         }
     },
     {   "water", {
-            {"sea", {-10, -5, 0, 5, 2.5, 0}},
+            {"sea", {-10, -5, 0, 5, 2.7, 0}},
             {"ice", {-5, -5, 5, -5, 1.5, 0}}
         }
     }

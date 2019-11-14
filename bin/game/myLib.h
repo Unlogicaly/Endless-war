@@ -16,14 +16,35 @@
 #include <array>
 #include <set>
 #include <cstring>
+#include <random>
+#include <ctime>
+#include <chrono>
+#include <cassert>
 //#include <errors.h>
 
-namespace Func
-{
+#define ull unsigned long long
+
+namespace Func {
     double round(double num, int precision);
 
+    std::vector<int> round(const std::vector<double> &vec);
+
+    std::vector<std::vector<int>> round(const std::vector<std::vector<double>> &matrix);
+
+    std::vector<double> round(const std::vector<double> &vec, int precision);
+
+    std::vector<std::vector<double>> round(const std::vector<std::vector<double>> &matrix, int precision);
+
+    std::vector<int> ceil(const std::vector<double> &vec);
+
+    std::vector<std::vector<int>> ceil(const std::vector<std::vector<double>> &matrix);
+
+    std::vector<int> floor(const std::vector<double> &vec);
+
+    std::vector<std::vector<int>> floor(const std::vector<std::vector<double>> &matrix);
+
     template<typename T>
-    void swap(std::vector<T> &a, unsigned long long int i, unsigned long long int j) {
+    void swap(std::vector<T> &a, ull int i, ull int j) {
         auto temp = a[i];
         a[i] = a[j];
         a[j] = temp;
@@ -31,11 +52,11 @@ namespace Func
 
     std::vector<std::string> &split(const std::string &s, char c = ' ');
 
-    unsigned long long int fact(unsigned long long n);
+    ull int fact(ull n);
 
     std::vector<std::vector<char>> permutations(const std::vector<char> &source,
-                                                unsigned long long n,
-                                                unsigned long long m);
+                                                ull n,
+                                                ull m);
 
     double d_mean(int count, ...);
 
@@ -65,33 +86,26 @@ namespace Func
 
 
     template<typename T>
-    std::vector<T> vector_1d(int length, T fill = 0) {
-        std::vector<T> res(static_cast<unsigned long long>(length));
+    std::vector<T> matrix_1d(ull length, T fill = 0) {
+        std::vector<T> res(length);
         for (auto &t: res) t = fill;
         return res;
     }
 
     template<typename T>
-    std::vector<std::vector<T>> vector_2d(int height, int width, T fill = 0) {
-        std::vector<std::vector<T>> res(height, vector_1d(width, fill));
+    std::vector<std::vector<T>> matrix_2d(ull height, ull width, T fill = 0) {
+        std::vector<std::vector<T>> res(height, matrix_1d(width, fill));
         return res;
     }
 
     template<typename T>
-    std::vector<std::vector<std::vector<T>>> vector_3d(int depth, int height, int width, T fill = 0) {
-        std::vector<std::vector<std::vector<T>>> res(static_cast<unsigned long long int>(depth), vector_2d(height, width, fill));
-        return res;
-    }
-
-
-    template <typename T>
     T sum(const std::vector<T> &vect) {
         T s{0};
         for (auto el: vect) s += el;
         return s;
     }
 
-    template <typename T>
+    template<typename T>
     T sum(const std::vector<std::vector<T>> &matrix) {
         T s{0};
         for (auto &vect: matrix) s += sum(vect);
@@ -104,7 +118,7 @@ namespace Func
         switch (axis) {
             case 1: {
                 for (auto &t: matrix)
-                    res.push_back(Func::sum(t));
+                    res.push_back(sum(t));
                 return res;
             }
             case 2: {
@@ -123,7 +137,7 @@ namespace Func
     }
 
 
-    template <typename T>
+    template<typename T>
     bool in(const std::vector<T> &src, T sub) {
         for (auto &t: src) {
             if (sub == t) return true;
@@ -131,7 +145,7 @@ namespace Func
         return false;
     }
 
-    template <typename T>
+    template<typename T>
     bool in(const std::vector<std::vector<T>> &src, T sub) {
         for (auto &t: src) {
             if (in(t, sub)) return true;
@@ -140,7 +154,7 @@ namespace Func
     }
 
 
-    template <typename T>
+    template<typename T>
     T max(const std::vector<T> &vec) {
         T m = vec[0];
         for (auto &t: vec)
@@ -148,11 +162,11 @@ namespace Func
         return m;
     }
 
-    template <typename T>
+    template<typename T>
     T max(const std::vector<std::vector<T>> &matrix) {
         T m = matrix[0][0];
         for (auto &vec: matrix)
-            m = std::max(m, Func::max(vec));
+            m = std::max(m, max(vec));
         return m;
     }
 
@@ -162,7 +176,7 @@ namespace Func
         switch (axis) {
             case 1: {
                 for (auto &t: matrix)
-                    res.push_back(Func::max(t));
+                    res.push_back(max(t));
                 return res;
             }
             case 2: {
@@ -180,7 +194,7 @@ namespace Func
     }
 
 
-    template <typename T>
+    template<typename T>
     T min(const std::vector<T> &vec) {
         T m = vec[0];
         for (auto &t: vec)
@@ -188,11 +202,11 @@ namespace Func
         return m;
     }
 
-    template <typename T>
+    template<typename T>
     T min(const std::vector<std::vector<T>> &matrix) {
         T m = matrix[0][0];
         for (auto &vec: matrix)
-            m = std::min(m, Func::min(vec));
+            m = std::min(m, min(vec));
         return m;
     }
 
@@ -202,7 +216,7 @@ namespace Func
         switch (axis) {
             case 1: {
                 for (auto &t: matrix)
-                    res.push_back(Func::min(t));
+                    res.push_back(min(t));
                 return res;
             }
             case 2: {
@@ -220,7 +234,7 @@ namespace Func
     }
 
 
-    template <typename T>
+    template<typename T>
     double mean(const std::vector<T> &vec) {
         return double(Func::sum(vec)) / vec.size();
     }
@@ -230,13 +244,13 @@ namespace Func
         return double(Func::sum(matrix)) / (matrix.size() * matrix[0].size());
     }
 
-    template <typename T>
+    template<typename T>
     std::vector<double> mean(const std::vector<std::vector<T>> &matrix, const int axis) {
         std::vector<double> res;
         switch (axis) {
             case 1: {
                 for (auto &vec: matrix)
-                    res.push_back(Func::mean(vec));
+                    res.push_back(mean(vec));
                 return res;
             }
             case 2: {
@@ -255,26 +269,29 @@ namespace Func
     }
 
 
-    template <class T>
-    void print(const std::vector<T> &src, const std::string &sep = " ", const std::string &end = "\n") {
+    template<class T>
+    void print(const std::vector<T> &src,
+               const std::string &sep = " ",
+               const std::string &end = "\n",
+               std::ostream &os = std::cout) {
         for (auto &t: src) {
-            std::cout << t << sep;
+            os << t << sep;
         }
-        std::cout << end;
+        os << end;
     }
 
-    template <typename T>
-    void print(const std::vector<std::vector<T>> &src, const std::string &sep = " ", const std::string &end = "\n") {
+    template<typename T>
+    void print(const std::vector<std::vector<T>> &src,
+               const std::string &sep1 = " ",
+               const std::string &sep2 = "\n",
+               const std::string &end = "\n",
+               std::ostream &os = std::cout) {
         for (auto &vec: src) {
-            print(vec, sep);
+            print(vec, sep1, sep2, os);
         }
-        std::cout << end;
+        os << end;
     }
 
-    template<typename T, typename P>
-    std::ostream &operator << (std::ostream &os, const std::pair<T, P> &src) {
-        return os << "(" << src.first << ", " << src.second << ")";
-    }
 
     template<typename T>
     std::vector<T> flatten(const std::vector<std::vector<T>> &matrix, const int axis = 1) {
@@ -308,6 +325,465 @@ namespace Func
             res.push_back({vec1[i], vec2[i]});
         return res;
     }
+
+    template<typename T>
+    std::string type(T) {
+        auto _n = typeid(T).name();
+
+        if (_n == typeid(int).name()) return "int";
+        if (_n == typeid(double).name()) return "double";
+        if (_n == typeid(float).name()) return "float";
+        if (_n == typeid(char).name()) return "char";
+        if (_n == typeid(char *).name()) return "char*";
+        if (_n == typeid(long).name()) return "long";
+        if (_n == typeid(long long).name()) return "long long";
+        if (_n == typeid(unsigned).name()) return "unsigned";
+        if (_n == typeid(unsigned long).name()) return "unsigned long";
+        if (_n == typeid(ull).name()) return "ull";
+        if (_n == typeid(bool).name()) return "bool";
+        if (_n == typeid(void).name()) return "void";
+        if (_n == typeid(void *).name()) return "void*";
+        if (_n == typeid(std::string).name()) return "string";
+        if (_n == typeid(short).name()) return "short";
+        if (_n == typeid(unsigned short).name()) return "unsigned short";
+        if (_n == typeid(long double).name()) return "long double";
+
+        return _n;
+    }
+
+    template<typename T>
+    std::vector<std::vector<T>> dot(const std::vector<std::vector<T>> &a1, const std::vector<std::vector<T>> &a2) {
+
+    }
+
+    template<typename T, typename P>
+    std::vector<T> copy_as(const std::vector<P> &vec) {
+        auto res = matrix_1d(vec.size(), T(0));
+        for (auto i = 0; i < vec.size(); ++i)
+            res[i] = static_cast<T>(vec[i]);
+        return res;
+    }
+
+    template<typename T, typename P>
+    std::vector<std::vector<T>> copy_as(const std::vector<std::vector<P>> &matrix) {
+
+        auto n = matrix.size(), m = matrix[0].size();
+
+        auto res = matrix_2d(n, m, T(0));
+
+        for (auto i = 0; i < n; ++i)
+            for (auto j = 0; j < m; ++j)
+                res[i][j] = static_cast<T>(matrix[i][j]);
+
+        return res;
+    }
+
+    int randint(int start, int end);
+
+    std::vector<int> randint(int start, int end, ull int size);
+
+    double rand();
+
+    std::vector<double> rand(ull int size);
+
+    template<typename T>
+    std::vector<std::vector<T>> reshape(const std::vector<T> &vec, ull h, ull w) {
+        if (h * w != vec.size())
+            throw std::range_error("Can't reshape vector with size " + str(vec.size()) +
+                                   " to matrix " + str(h) + "x" + str(w));
+
+        auto res = matrix_2d(h, w, T(0));
+
+        for (auto i = 0; i < h; ++i)
+            for (auto j = 0; j < w; ++j)
+                res[i][j] = vec[i * w + j];
+
+        return res;
+    }
+
+    template<typename T>
+    std::vector<std::vector<T>> reshape(const std::vector<std::vector<T>> &matrix, ull h, ull w) {
+        auto n = matrix.size(), m = matrix[0].size();
+        if (h * w != n * m)
+            throw std::range_error("Can't reshape matrix " + str(n) + "x" + str(m) +
+                                   " to matrix " + str(h) + "x" + str(w));
+
+        auto res = matrix_2d(h, w, T(0));
+
+        for (auto i = 0; i < h; ++i)
+            for (auto j = 0; j < w; ++j)
+                res[i][j] = matrix[(i * w + j) / m][(i * w + j) % m];
+
+        return res;
+    }
+
+    template<typename T>
+    std::pair<ull, ull> shape(const std::vector<std::vector<T>> &matrix) {
+        return {matrix.size(), matrix[0].size()};
+    }
+
+    template<typename T>
+    T clipped(T src, T low, T high) {
+        assert(high > low);
+        return std::max(std::min(src, high), low);
+    }
+
+    template<typename T>
+    std::vector<T> clipped(const std::vector<T> &vec, T low, T high) {
+        assert(high > low);
+        auto res = matrix_1d(vec.size(), T(0));
+
+        for (auto i = 0; i < vec.size(); ++i)
+            res[i] = std::max(std::min(vec[i], high), low);
+
+        return res;
+    }
+
+    template<typename T>
+    std::vector<std::vector<T>> clipped(const std::vector<std::vector<T>> &matrix, T low, T high) {
+        assert(high > low);
+
+        auto n = matrix.size(), m = matrix[0].size();
+
+        auto res = matrix_2d(n, m, T(0));
+
+        for (auto i = 0; i < n; ++i)
+            for (auto j = 0; j < m; ++j)
+                res[i][j] = std::max(std::min(matrix[i][j], high), low);
+
+        return res;
+    }
+
+    template<typename T>
+    void clip(T &src, T low, T high) {
+        assert(high > low);
+        src = std::max(std::min(src, high), low);
+    }
+
+    template<typename T>
+    void clip(std::vector<T> &vec, T low, T high) {
+        assert(high > low);
+
+        for (auto i = 0; i < vec.size(); ++i)
+            vec[i] = std::max(std::min(vec[i], high), low);
+    }
+
+    template<typename T>
+    void clip(std::vector<std::vector<T>> &matrix, T low, T high) {
+        assert(high > low);
+
+        auto n = matrix.size(), m = matrix[0].size();
+
+        for (auto i = 0; i < n; ++i)
+            for (auto j = 0; j < m; ++j)
+                matrix[i][j] = std::max(std::min(matrix[i][j], high), low);
+    }
+
+    template<typename T>
+    std::vector<T> range(T start, T end, T step = 1) {
+        assert((end - start) * step > 0);
+
+        std::vector<T> res;
+
+        while (step > 0 == start < end) {
+            res.push_back(start);
+            start += step;
+        }
+        return res;
+    }
+
+    template<typename T>
+    std::vector<T> range(T end) {
+        assert(end);
+        T step = (end > 0 ? 1 : -1);
+        return range(0, end, step);
+    }
+
+    std::vector<double> linspace(double start, double end, ull int q);
+}
+
+template<typename T, typename P>
+std::ostream &operator<<(std::ostream &os, const std::pair<T, P> &src) {
+    return os << "(" << src.first << ", " << src.second << ")";
+}
+
+template<typename T>
+std::vector<T> operator*(const std::vector<T> &a1, const std::vector<T> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<T>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] * a2[i];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<double> operator*(const std::vector<T> &a1, const std::vector<P> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<double>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] * a2[i];
+
+    return res;
+}
+
+template<typename T>
+std::vector<std::vector<T>> operator*(const std::vector<std::vector<T>> &a1,
+                                      const std::vector<std::vector<T>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<T>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] * a2[i][j];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<std::vector<double>> operator*(const std::vector<std::vector<T>> &a1,
+                                           const std::vector<std::vector<P>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<double>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] * a2[i][j];
+
+    return res;
+}
+
+
+template<typename T>
+std::vector<double> operator/(const std::vector<T> &a1, const std::vector<T> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    if (Func::in(a2, T(0)))
+        throw std::runtime_error("Zero devising error");
+
+    auto res = Func::matrix_1d<double>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = double(a1[i]) / a2[i];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<double> operator/(const std::vector<T> &a1, const std::vector<P> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    if (Func::in(a2, P(0)))
+        throw std::runtime_error("Zero devising error");
+
+    auto res = Func::matrix_1d<double>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = double(a1[i]) / a2[i];
+
+    return res;
+}
+
+template<typename T>
+std::vector<std::vector<double>> operator/(const std::vector<std::vector<T>> &a1,
+                                           const std::vector<std::vector<T>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    if (Func::in(a2, T(0)))
+        throw std::runtime_error("Zero devising error");
+
+    auto res = Func::matrix_2d<double>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = double(a1[i][j]) / a2[i][j];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<std::vector<double>> operator/(const std::vector<std::vector<T>> &a1,
+                                           const std::vector<std::vector<P>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    if (Func::in(a2, P(0)))
+        throw std::runtime_error("Zero devising error");
+
+    auto res = Func::matrix_2d<double>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = double(a1[i][j]) / a2[i][j];
+
+    return res;
+}
+
+
+template<typename T>
+std::vector<T> operator+(const std::vector<T> &a1, const std::vector<T> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<T>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] + a2[i];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<double> operator+(const std::vector<T> &a1, const std::vector<P> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<double>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] + a2[i];
+
+    return res;
+}
+
+template<typename T>
+std::vector<std::vector<T>> operator+(const std::vector<std::vector<T>> &a1,
+                                      const std::vector<std::vector<T>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<T>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] + a2[i][j];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<std::vector<double>> operator+(const std::vector<std::vector<T>> &a1,
+                                           const std::vector<std::vector<P>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<double>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] + a2[i][j];
+
+    return res;
+}
+
+
+template<typename T>
+std::vector<T> operator-(const std::vector<T> &a1, const std::vector<T> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<T>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] - a2[i];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<double> operator-(const std::vector<T> &a1, const std::vector<P> &a2) {
+
+    auto n = a1.size();
+
+    if (n != a2.size())
+        throw std::range_error("Can't multiple vectors with different lengths");
+
+    auto res = Func::matrix_1d<double>(n);
+
+    for (auto i = 0; i < n; ++i) res[i] = a1[i] - a2[i];
+
+    return res;
+}
+
+template<typename T>
+std::vector<std::vector<T>> operator-(const std::vector<std::vector<T>> &a1,
+                                      const std::vector<std::vector<T>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<T>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] - a2[i][j];
+
+    return res;
+}
+
+template<typename T, typename P>
+std::vector<std::vector<double>> operator-(const std::vector<std::vector<T>> &a1,
+                                           const std::vector<std::vector<P>> &a2) {
+
+    auto n = a1.size(), m = a1[0].size();
+
+    if (n != a2.size() or m != a2[0].size())
+        throw std::range_error("Can't multiple matrix with different sizes");
+
+    auto res = Func::matrix_2d<double>(n, m);
+
+    for (auto i = 0; i < n; ++i)
+        for (auto j = 0; j < m; ++j)
+            res[i][j] = a1[i][j] - a2[i][j];
+
+    return res;
 }
 
 #endif //UNTITLED3_MYLIB_H

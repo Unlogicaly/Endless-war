@@ -4,7 +4,7 @@
 
 using std::string;
 
-const string source = "D:\\My\\Source\\";
+const string source = "D:\\Endless_war\\source\\";
 
 void del(const string &path)
 {
@@ -62,7 +62,7 @@ void cl(std::vector<string> &src) {
 std::vector<std::vector<std::pair<std::string, std::string>>> get_states(const string &src)
 {
     std::ifstream t_is{::source + "size.txt"};
-    if (!t_is.good()) throw std::runtime_error("File is damaged or doesn't exist");
+    if (!t_is.good()) throw std::runtime_error("File '" + source + "size.txt' is damaged or doesn't exist");
 
     int n = 0, m = 0;
 
@@ -70,7 +70,7 @@ std::vector<std::vector<std::pair<std::string, std::string>>> get_states(const s
 
     t_is.close();
 
-    auto res = Func::vector_2d(n, m, std::pair<std::string, std::string>{"", ""});
+    auto res = Func::matrix_2d(n, m, std::pair<std::string, std::string>{"", ""});
 
     std::ifstream is{src};
 

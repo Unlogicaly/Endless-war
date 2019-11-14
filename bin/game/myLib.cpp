@@ -8,10 +8,6 @@
 using std::vector;
 using std::string;
 
-double Func::round(double num, int precision) {
-    return std::round(pow(10, precision) * num) / pow(10, precision);
-}
-
 vector<string> &Func::split(const string &s, char c) {
     auto result = new vector<string>{s};
 
@@ -212,5 +208,160 @@ vector<vector<char>> Func::permutations(const vector<char> &source, unsigned lon
 
     return result;
 }
+
+double Func::round(double num, int precision) {
+    return std::round(pow(10, precision) * num) / pow(10, precision);
+}
+
+int Func::randint(int start, int end) {
+
+    std::default_random_engine dev(
+            static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+
+    std::uniform_int_distribution<int> dist(start, end);
+
+    return dist(dev);
+}
+
+std::vector<int> Func::randint(int start, int end, unsigned long long int size) {
+    std::default_random_engine dev(
+            static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+
+    std::uniform_int_distribution<int> dist(start, end);
+
+    auto res = Func::matrix_1d(size, 0);
+
+    for (auto i = 0; i < size; ++i)
+        res[i] = dist(dev);
+
+    return res;
+}
+
+double Func::rand() {
+    std::default_random_engine dev(
+            static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+
+    std::uniform_real_distribution<double> distribution;
+
+    return distribution(dev);
+}
+
+std::vector<double> Func::rand(unsigned long long int size) {
+    std::default_random_engine dev(
+            static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+
+    std::uniform_real_distribution<double> distribution;
+
+    auto res = Func::matrix_1d(size, 0.);
+
+    for (auto i = 0; i < size; ++i) {
+        res[i] = distribution(dev);
+    }
+
+    return res;
+}
+
+std::vector<double> Func::linspace(double start, double end, unsigned long long int q) {
+    double step = (end - start) / double(q - 1);
+
+    auto res = matrix_1d(q, 0.);
+
+    for (auto i = 0; i < q; ++i) {
+        res[i] = start;
+        start += step;
+    }
+    return res;
+}
+
+std::vector<int> Func::round(const std::vector<double> &vec) {
+    auto n = vec.size();
+
+    auto res = Func::matrix_1d<int>(n, 0);
+
+    for (auto i = 0; i < n; ++i)
+        res[i] = static_cast<int>(std::round(vec[i]));
+
+    return res;
+}
+
+std::vector<std::vector<int>> Func::round(const std::vector<std::vector<double>> &matrix) {
+    auto n = matrix.size(), m = matrix[0].size();
+
+    auto res = Func::matrix_2d<int>(n, m, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        for (decltype(m) j{0}; j < m; ++j)
+            res[i][j] = static_cast<int>(std::round(matrix[i][j]));
+
+    return res;
+}
+
+std::vector<double> Func::round(const std::vector<double> &vec, int precision) {
+    auto n = vec.size();
+
+    auto res = Func::matrix_1d<double>(n, 0.);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        res[i] = Func::round(vec[i], precision);
+
+    return res;
+}
+
+std::vector<std::vector<double>> Func::round(const std::vector<std::vector<double>> &matrix, int precision) {
+    auto n = matrix.size(), m = matrix[0].size();
+
+    auto res = Func::matrix_2d<double>(n, m, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        for (decltype(m) j{0}; j < m; ++j)
+            res[i][j] = Func::round(matrix[i][j], precision);
+
+    return res;
+}
+
+std::vector<int> Func::ceil(const std::vector<double> &vec) {
+    auto n = vec.size();
+
+    auto res = Func::matrix_1d<int>(n, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        res[i] = static_cast<int>(std::ceil(vec[i]));
+}
+
+std::vector<std::vector<int>> Func::ceil(const std::vector<std::vector<double>> &matrix) {
+    auto n = matrix.size(), m = matrix[0].size();
+
+    auto res = Func::matrix_2d<int>(n, m, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        for (decltype(m) j{0}; j < m; ++j)
+            res[i][j] = static_cast<int>(std::ceil(matrix[i][j]));
+
+    return res;
+}
+
+std::vector<int> Func::floor(const std::vector<double> &vec) {
+    auto n = vec.size();
+
+    auto res = Func::matrix_1d<int>(n, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        res[i] = static_cast<int>(std::floor(vec[i]));
+
+    return res;
+}
+
+std::vector<std::vector<int>> Func::floor(const std::vector<std::vector<double>> &matrix) {
+    auto n = matrix.size(), m = matrix[0].size();
+
+    auto res = Func::matrix_2d<int>(n, m, 0);
+
+    for (decltype(n) i{0}; i < n; ++i)
+        for (decltype(m) j{0}; j < m; ++j)
+            res[i][j] = static_cast<int>(std::floor(matrix[i][j]));
+
+    return res;
+}
+
 
 
