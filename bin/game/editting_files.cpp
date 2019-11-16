@@ -4,8 +4,6 @@
 
 using std::string;
 
-const string source = "D:\\Endless_war\\source\\";
-
 void del(const string &path)
 {
     std::remove(path.c_str());
@@ -31,7 +29,7 @@ void read_directory(const std::string &name, std::vector<string> &v)
 void clear(Simple_window &win)
 {
     std::vector<std::string> files;
-    read_directory(game_path + "\\Temp\\Pic", files);
+    read_directory(game + "\\temp\\Pic", files);
     for (auto &file : files)
     {
         if (!file.empty())

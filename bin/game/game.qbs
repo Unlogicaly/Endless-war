@@ -5,15 +5,22 @@ CppApplication {
 
     cpp.cxxLanguageVersion: "c++14"
 
-    property path graph_lib_dir: "C:/Graph_lib"
+    property path graph_lib_dir: "../graph_lib"
+    property path source_dir: "../../source"
+    property path fltk_dir: "../fltk"
 
     files: [
-        "D:\\My\\Source\\landscape.txt",
-        "D:\\My\\Source\\terrain.txt",
-        "D:\\My\\Source\\units.txt",
-        "D:\\My\\Source\\size.txt",
-        "myLib.h",
-        "myLib.cpp",
+        "A_star.cpp",
+        "A_star.h",
+        source_dir + "/landscape.txt",
+        source_dir + "/terrain.txt",
+        source_dir + "/units.txt",
+        source_dir + "/size.txt",
+        graph_lib_dir + "/Graph.cpp",
+        graph_lib_dir + "/GUI.cpp",
+        graph_lib_dir + "/Window.cpp",
+        "../myLib/myLib.h",
+        "../myLib/myLib.cpp",
         "map.cpp",
         "map.h",
         "node.cpp",
@@ -25,24 +32,24 @@ CppApplication {
         "area_type_define.cpp",
         "create_window.cpp",
         "create_window.h",
-        "editting_files.cpp",
-        "editting_files.h",
         "grid.cpp",
         "grid.h",
+        "editting_files.cpp",
+        "editting_files.h",
         "pictures_treatment.cpp",
         "pictures_treatment.h",
         "split.cpp",
         "split.h",
-        graph_lib_dir + "/Graph.cpp",
-        graph_lib_dir + "/GUI.cpp",
-        graph_lib_dir + "/Window.cpp",
         "main.cpp",
     ]
 
-    cpp.includePaths: "C:/fltk_win64/include"
-    cpp.libraryPaths: "C:/fltk_win64/lib"
+    cpp.includePaths: fltk_dir + "/include"
+    cpp.libraryPaths: fltk_dir + "/lib"
+
     cpp.cxxFlags: "-Wno-unused-parameter"
+
     cpp.driverLinkerFlags: "-mwindows"
+
     cpp.staticLibraries: [
         "fltk_images",
         "fltk",
@@ -51,7 +58,7 @@ CppApplication {
         "fltk_jpeg",
         "ole32",
         "uuid",
-        "comctl32",
+        "comctl32"
     ]
 
     Group {     // Properties for the produced executable

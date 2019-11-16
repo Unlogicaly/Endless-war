@@ -12,7 +12,7 @@ string get_pic(const string &_name, int size, const string &team)
     if (split(name, '.').size() == 1)
         name += ".gif";
 
-    auto init_path = game_path + "\\Source\\Pic\\" + name;
+    auto init_path = game + "\\source\\Pic\\" + name;
 
     if (!check_file(init_path))
     {
@@ -20,14 +20,14 @@ string get_pic(const string &_name, int size, const string &team)
         exit(-1);
     }
 
-    auto final_path = game_path + "\\Temp\\Pic\\" + name;
+    auto final_path = game + "\\temp\\Pic\\" + name;
 
     if (!check_file(final_path))
     {
-        auto input_file = game_path + "\\Temp\\im_create.in";
+        auto input_file = game + "\\temp\\im_create.in";
         std::ofstream os{input_file};
         os << init_path << std::endl << final_path << std::endl << std::to_string(size) << std::endl;
-        std::system((game_path + "\\resize_image.py < " + input_file).c_str());
+        std::system((game + "\\resize_image.py < " + input_file).c_str());
         del(input_file);
     }
     return final_path;
