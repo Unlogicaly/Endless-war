@@ -12,7 +12,7 @@ string get_pic(const string &_name, int size, const string &team)
     if (split(name, '.').size() == 1)
         name += ".gif";
 
-    auto init_path = game + "\\source\\Pic\\" + name;
+    auto init_path = source + "Pic\\" + name;
 
     if (!check_file(init_path))
     {
@@ -20,19 +20,25 @@ string get_pic(const string &_name, int size, const string &team)
         exit(-1);
     }
 
-    auto final_path = game + "\\temp\\Pic\\" + name;
+    auto final_path = game + "temp\\Pic\\" + name;
 
     if (!check_file(final_path))
     {
-        auto input_file = game + "\\temp\\im_create.in";
+        auto input_file = game + "temp\\im_create.in";
         std::ofstream os{input_file};
         os << init_path << std::endl << final_path << std::endl << std::to_string(size) << std::endl;
-        std::system((game + "\\resize_image.py < " + input_file).c_str());
+        std::system((game + "resize_image.py < " + input_file).c_str());
         del(input_file);
     }
     return final_path;
 }
 
+/**
+ * @brief get_field_size: temporary function returns only one number - 128 (for 1920x1080 screens)
+ * ToDo: make several functions, which will calculate appropriate field size and padding
+ * @param win: current game window
+ * @return size of one field (one of its dimensions)
+ */
 int get_field_size(Simple_window &win)
 {
     return 128;

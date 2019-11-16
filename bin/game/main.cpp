@@ -29,7 +29,7 @@ int main()
 
     win->wait_for_button();
 
-    clear(*win);
+//    clear(*win);
 
     return 0;
 }

@@ -1,5 +1,5 @@
 none_1 none_1 none_1 none_1 none_1 none_1 none_1
-none_1 soldier_blue_1 none_1 none_1 none_1 none_1 none_1
+none_1 archer_blue_1 none_1 none_1 none_1 none_1 none_1
 none_1 none_1 none_1 none_1 none_1 none_1 none_1
 none_1 none_1 none_1 none_1 none_1 none_1 none_1
 none_1 none_1 none_1 none_1 none_1 none_1 none_1

@@ -13,8 +13,10 @@ void read_directory(const std::string &name, std::vector<string> &v)
 {
     string buffer = "list_dir_temp.out";
     string command = "dir /b " + name + " > " + buffer;
-    std::ifstream is{buffer};
+
     system(command.c_str());
+
+    std::ifstream is{buffer};
 
     string s;
     while (!is.eof())
@@ -29,7 +31,8 @@ void read_directory(const std::string &name, std::vector<string> &v)
 void clear(Simple_window &win)
 {
     std::vector<std::string> files;
-    read_directory(game + "\\temp\\Pic", files);
+    read_directory(game + "temp\\Pic", files);
+
     for (auto &file : files)
     {
         if (!file.empty())
@@ -37,12 +40,6 @@ void clear(Simple_window &win)
     }
 }
 
-/**
- * @brief get_field_size: temporary function returns only one number - 128 (for 1920x1080 screens)
- * ToDo: make several functions, which will calculate appropriate field size and padding
- * @param win: current game window
- * @return size of one field (one of its dimensions)
- */
 bool check_file(const std::string &path)
 {
     std::ifstream is{path};

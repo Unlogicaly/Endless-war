@@ -3,8 +3,8 @@
 
 #include "../myLib/myLib.h"
 
-const std::string source{"D:/Endless_war/source/"};
-const std::string game{"D:/Endless_war/"};
+const std::string source{"D:\\Endless_war\\source\\"};
+const std::string game{"D:\\Endless_war\\"};
 
 #include "D:/Endless_war/bin/graph_lib/Graph.h"
 #include "D:/Endless_war/bin/graph_lib/Simple_window.h"
