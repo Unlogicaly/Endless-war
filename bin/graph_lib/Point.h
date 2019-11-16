@@ -2,6 +2,7 @@
 #define POINT_GUARD
 
 //typedef void (*Callback)(void*,void*);
+#include <iostream>
 
 namespace Graph_lib {
 
@@ -9,6 +10,7 @@ struct Point
 {
   int x,y;
 
+  Point(std::pair<int, int> p) : x{p.first}, y{p.second} { }
   Point(int xx, int yy) : x(xx), y(yy) { }
   Point() :x(0), y(0) { }
 

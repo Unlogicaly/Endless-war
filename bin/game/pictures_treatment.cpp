@@ -1,6 +1,5 @@
 #include "pictures_treatment.h"
 #include "editting_files.h"
-//#include "split.h"
 #include <fstream>
 #include <iostream>
 

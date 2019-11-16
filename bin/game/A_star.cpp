@@ -5,8 +5,6 @@ using std::string;
 using std::vector;
 
 #define d double
-#define point std::pair<ull, ull>
-#define feature std::pair<d, d>
 #define matr std::vector<std::vector<feature>>
 
 template<typename T>
@@ -33,14 +31,6 @@ inline d dist(d x1, d y1, d x2, d y2) {
     return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 }
 
-inline std::string pton(point p) {
-    return std::string(1, char(p.first + 'a')) + Func::str(p.second + 1);
-}
-
-inline point ntop(string name) {
-    return {name[0] - 'a', name[1] - '1'};
-}
-
 void re_add(vector<vector<pair<d, d> > > &matrix, vector<point > &av_nodes, const point &cur, ull h_m, ull w_m) {
     auto n = cur.first, m = cur.second;
     if (n and !Func::in(av_nodes, {n - 1, m}) and !bool(at(matrix, {n - 1, m}).first)) av_nodes.push_back({n - 1, m});
@@ -61,9 +51,6 @@ void add_neighbours(vector<point> &av_nodes, const point &cur, ull h_m, ull w_m)
 
 void re_weight(feature &c, const feature &p, d w)
 {
-    if (bool(c.first))
-        c.first = std::min(p.first + w + c.second, c.first);
-    else
         c.first = p.first + w + c.second;
 }
 
@@ -113,12 +100,18 @@ d back(const Map &m, vector<vector<feature>> &matrix, vector<string> &path, cons
 
     while (true)
     {
-        cur = av_nodes[0];
+        cur = {-1, 0};
         for (auto &t: av_nodes)
-            if (bool(at(matrix, t).first))
+            if (bool(at(matrix, t).first)){
+                if (cur.first == -1) {
+                    cur = t;
+                    continue;
+                }
                 cur = std::min(cur, t, [&matrix](point p1, point p2) {
                     return at(matrix, p1).first < at(matrix, p2).first;
                 });
+            }
+
 
         weight += m.get_field(pton(cur))->get_weight();
         path.insert(path.begin(), pton(cur));
@@ -134,6 +127,9 @@ d back(const Map &m, vector<vector<feature>> &matrix, vector<string> &path, cons
 
 std::pair<int, vector<string>> A_star(const Map &m, const Field &start, const Field &end)
 {
+    if (start.get_name() == end.get_name())
+        return {0, {start.get_name()}};
+
     auto y_max = m.get_h(), x_max = m.get_w();
 
     auto [y_start, x_start] = ntop(start.get_name());
@@ -148,6 +144,8 @@ std::pair<int, vector<string>> A_star(const Map &m, const Field &start, const Fi
     }
 
     filling(m, matrix, {y_start, x_start}, {y_end, x_end}, x_max, y_max);
+
+    Func::print(matrix, "\t");
 
     vector<string> path;
 
