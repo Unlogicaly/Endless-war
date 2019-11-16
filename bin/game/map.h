@@ -9,7 +9,7 @@ private:
     std::vector<std::vector<Field*>> m;
     int field_size;
 
-    int h, w;
+    ull h, w;
 protected:
     void draw_lines() const override;
 
@@ -20,8 +20,8 @@ public:
 
     Field *get_field(const std::string &name) const;
 
-    int get_h() const { return h; }
-    int get_w() const { return w; }
+    ull get_h() const { return h; }
+    ull get_w() const { return w; }
 
     std::vector<Field*> operator[] (int i);
 };
