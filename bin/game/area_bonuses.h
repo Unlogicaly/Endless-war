@@ -41,7 +41,7 @@ const std::map<std::string, std::map<std::string, std::vector<double>>> terrain 
               }
     },
     {   "none", {
-            {"none", {0, 0, 0, 0, 0}}
+            {"none", {0, 0, 0, 0, 0, 0}}
              }
     }
 };
@@ -67,5 +67,12 @@ const std::map<std::string, std::map<std::string, std::vector<double>>> unit {
 
 }
 
+const std::vector<std::string> area_order{
+    "Attack", "Defence", "Spell attack", "Spell defence"
+};
+
+const std::vector<std::string> unit_order{
+    "Attack", "Defense", "Spell attack", "Spell defence", "Speed", "Heal", "HP", "Range"
+};
 
 #endif // AREA_BONUSES_H

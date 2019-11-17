@@ -8,11 +8,6 @@ using std::vector;
 #define matr std::vector<std::vector<feature>>
 
 template<typename T>
-inline T &at(std::vector<std::vector<T>> &src, const point &sub) {
-    return src[sub.first][sub.second];
-}
-
-template<typename T>
 void del(std::vector<T> &src, T &sub) {
     for (ull i = 0; i < src.size(); ++i)
         if (src[i] == sub) {
@@ -51,6 +46,7 @@ void add_neighbours(vector<point> &av_nodes, const point &cur, ull h_m, ull w_m)
 
 void re_weight(feature &c, const feature &p, d w)
 {
+    if (!c.first)
         c.first = p.first + w + c.second;
 }
 

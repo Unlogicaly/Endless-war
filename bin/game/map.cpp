@@ -7,21 +7,23 @@ using std::vector;
 
 Field *Map::get_field(const string &name) const
 {
-    for (auto &t: m)
-        for (auto field: t)
-            if (field->get_name() == name) return field;
-    throw std::runtime_error("Can't find field called '" + name + "'\n");
+    auto [h, w] = ntop(name);
+    return m[h][w];
 }
 
-void Map::draw_lines() const
-{
-    for (auto i = 0; i < m.size(); ++i)
-        for (auto j = 0; j < m[0].size(); ++j) m[i][j]->draw_lines();
+void Map::show_info(Graph_lib::Address pwin) {
+    Fl_Widget &w = Graph_lib::reference_to<Fl_Widget>(pwin);
+    auto f = this->get_field(pton({w.y() / 128, w.x() / 128}));
+
+    inf->reload(f);
+
+    Fl::redraw();
 }
 
-Map::Map(int size, const string &lands_src,
+Map::Map(int size,
+         const string &lands_src,
          const string &terrain_src,
-         const string &units_src) : field_size{size}
+         const string &units_src) : field_size{size}, Simple_window({0, 0}, 1920, 1080, ""), inf(new InfBox())
 {
     auto lands = get_states(lands_src);
     auto ters = get_states(terrain_src);
@@ -38,13 +40,23 @@ Map::Map(int size, const string &lands_src,
         for (auto j = 0; j < lands[0].size(); ++j) {
             const string name = string(1, 'a' + i) + std::to_string(j + 1);
             bool full = (units[i][j].first != "none1");
+
             m.back().push_back( new Field{
                 new Landscape({j * 128, i * 128}, lands[i][j].first, size),
                 new Terrain({j * 128, i * 128}, ters[i][j].first, size, ters[i][j].second),
                 full,
                 full ? new Unit({j * 128, i * 128}, units[i][j].first, size, units[i][j].second) : nullptr,
-                name, size
+                name, size, cb_info, *this
             } );
+
+            attach(m[i][j]->info);
+
+            attach(*m[i][j]);
         }
     }
+
+    inf->reload(m[0][0]);
+
+    attach(*inf);
 }
+
