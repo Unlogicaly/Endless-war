@@ -5,7 +5,7 @@
 #include "editting_files.h"
 #include <iostream>
 
-class myWin;
+class Map;
 
 class Landscape : public Graph_lib::Image
 {
@@ -74,34 +74,41 @@ class Field : public Graph_lib::Shape, public Node
     Landscape *landscape;
     Terrain *terrain;
 
-
     Unit *unit;
 
     Graph_lib::Point p;
 
     int size;
 
-    Graph_lib::Window &win;
+    Map &m;
 
   public:
     bool full{false};
 
-    Field(Landscape *land, Terrain *ter, bool full, Unit *unit, const std::string& name, int size, Graph_lib::Callback cb_info, Graph_lib::Window &win);
+    Graph_lib::Point get_point() const {return p;}
+
+    int get_size() const {return size;}
+
+    Field(Landscape *land, Terrain *ter, bool full, Unit *unit, const std::string& name, int size, Graph_lib::Callback cb_info, Map &m);
 
     Graph_lib::Button info;
 
 //    void show_info(InfBox *inf) const;
 
-    void attach(Graph_lib::Window &win) { info.attach(win); }
+    void attach(Map &m);
 
     std::vector<double> get_land_stats() const;
     std::vector<double> get_unit_stats() const;
+
+    Map &get_map() const {return m;}
 
     void draw_lines() const override;
 };
 
 struct InfBox : public Graph_lib::Shape
 {
+    Graph_lib::Image *sel{nullptr};
+
     Field *cur_field{nullptr};
 
     std::vector<Graph_lib::Text*> land_stats;

@@ -1,5 +1,6 @@
 #include "Field.h"
 #include <iostream>
+#include "search_paths.h"
 
 //using Graph_lib::Point;
 using Graph_lib::Image;
@@ -55,7 +56,7 @@ Unit::Unit(Graph_lib::Point p, const std::string &sub_type, int size, const std:
 }
 
 
-Field::Field(Landscape *land, Terrain *ter, bool full, Unit *unit, const std::string &name, int size, Graph_lib::Callback cb_info, Graph_lib::Window &win) :
+Field::Field(Landscape *land, Terrain *ter, bool full, Unit *unit, const std::string &name, int size, Graph_lib::Callback cb_info, Map &m) :
     Node::Node{name, define_weight(land->get_sub_type(), ter->get_sub_type())},
     info(land->Point(), size, size, "", cb_info),
     landscape{land},
@@ -63,9 +64,14 @@ Field::Field(Landscape *land, Terrain *ter, bool full, Unit *unit, const std::st
     full{full},
     p{land->Point()},
     size{size},
-    win{win}
+    m{m}
 {
     if (full) this->unit = unit;
+}
+
+void Field::attach(Map &m)
+{
+    m.attach(info);
 }
 
 std::vector<double> Field::get_unit_stats() const
@@ -74,7 +80,7 @@ std::vector<double> Field::get_unit_stats() const
         return areas::unit.at(unit->get_type()).at(unit->get_sub_type());
     else {
 
-        return std::vector<double>(9, 0);
+        return std::vector<double>(u_stats_num, 0);
     }
 }
 
@@ -100,7 +106,6 @@ void Field::draw_lines() const
     if (full) unit->draw_lines();
 }
 
-
 InfBox::InfBox() :
     cur_field{nullptr},
     background{new Graph_lib::Rectangle({info_box_x, info_box_y}, info_box_w, info_box_h)}
@@ -120,6 +125,10 @@ InfBox::InfBox() :
     }
 }
 
+Graph_lib::Point operator - (const Graph_lib::Point &p1, const Graph_lib::Point &p2) {
+    return {p1.x - p2.x, p1.y - p2.y};
+}
+
 void InfBox::reload(Field *field) {
     cur_field = field;
     auto temp_land_stats = field->get_land_stats();
@@ -131,6 +140,15 @@ void InfBox::reload(Field *field) {
     for (auto i = 0; i < u_stats_num; ++i){
         unit_stats[i]->set_label(unit_order[i] + ": " + Func::str(int(temp_unit_stats[i])));
     }
+
+    if (!sel)
+        sel = new Graph_lib::Image(field->get_point(), get_pic("select.gif", field->get_size()));
+
+    else {
+        auto [dx, dy] = cur_field->get_point() - sel->get_point();
+        sel->move(dx, dy);
+    }
+
     Fl::redraw();
 }
 
@@ -142,4 +160,10 @@ void InfBox::draw_lines() const
 
     for (auto &t: unit_stats)
         t->draw();
+
+    if (cur_field->full) {
+        av_fields(&cur_field->get_map(), cur_field->get_map(), cur_field->get_name(), cur_field->get_unit_stats()[4]);
+    }
+
+    sel->draw();
 }

@@ -59,4 +59,3 @@ Map::Map(int size,
 
     attach(*inf);
 }
-

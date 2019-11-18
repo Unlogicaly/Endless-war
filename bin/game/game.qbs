@@ -12,6 +12,8 @@ CppApplication {
     files: [
         "A_star.cpp",
         "A_star.h",
+        "search_paths.cpp",
+        "search_paths.h",
         source_dir + "/landscape.txt",
         source_dir + "/terrain.txt",
         source_dir + "/units.txt",

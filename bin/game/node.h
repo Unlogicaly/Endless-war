@@ -22,7 +22,7 @@ public:
 
     double get_weight() {return weight;}
 
-    std::vector<Node> get_neighbours();
+    std::vector<std::string> get_neighbours();
 
     void link(Node &node);
 

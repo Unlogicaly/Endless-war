@@ -44,6 +44,10 @@ void add_neighbours(vector<point> &av_nodes, const point &cur, ull h_m, ull w_m)
     if (w_m - m - 1) av_nodes.push_back({n, m + 1});
 }
 
+bool neighbours(point p1, point p2) {
+    return std::fabs(p1.first - p2.first) + std::fabs(p1.second - p2.second) == 1;
+}
+
 void re_weight(feature &c, const feature &p, d w)
 {
     if (!c.first)
@@ -61,7 +65,7 @@ void filling(const Map &m, vector<vector<feature>> &matrix, const point &start, 
     re_add(matrix, av_nodes, prev, y_max, x_max);
 
     for (auto &t: av_nodes)
-        re_weight(at(matrix, t), prev, m.get_field(pton(t))->get_weight());
+        re_weight(at(matrix, t), at(matrix, prev), m.get_field(pton(t))->get_weight());
 
     while(true) {
         point cur = av_nodes[0];
@@ -77,7 +81,7 @@ void filling(const Map &m, vector<vector<feature>> &matrix, const point &start, 
         re_add(matrix, av_nodes, cur, y_max, x_max);
 
         for (auto &t: av_nodes)
-            re_weight(at(matrix, t), at(matrix, prev), m.get_field(pton(t))->get_weight());
+            re_weight(at(matrix, t), at(matrix, cur), m.get_field(pton(t))->get_weight());
 
         prev = cur;
     }
@@ -108,13 +112,10 @@ d back(const Map &m, vector<vector<feature>> &matrix, vector<string> &path, cons
                 });
             }
 
-
         weight += m.get_field(pton(cur))->get_weight();
         path.insert(path.begin(), pton(cur));
 
         if (cur == start) break;
-
-        av_nodes.clear();
 
         add_neighbours(av_nodes, cur, y_max, x_max);
     }

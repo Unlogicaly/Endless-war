@@ -10,11 +10,11 @@ Node::Node(std::string name, double weight, std::vector<Node *> nodes) :
     for (auto &n: nodes) link(*n);
 }
 
-std::vector<Node> Node::get_neighbours() {
-    std::vector<Node> neighbours;
-    for (auto node: available_nodes)
+std::vector<std::string> Node::get_neighbours() {
+    std::vector<std::string> neighbours;
+    for (auto &node: available_nodes)
     {
-        neighbours.push_back(*node);
+        neighbours.push_back(node->get_name());
     }
     return neighbours;
 }
